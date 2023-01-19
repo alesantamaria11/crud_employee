@@ -1,8 +1,10 @@
 package org.example;
+import net.proteanit.sql.DbUtils;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.*;
 
 public class Employee {
     private JPanel Main;
@@ -16,7 +18,7 @@ public class Employee {
     private JButton deleteButton;
     private JTextField txtId;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         JFrame frame = new JFrame("Employee");
         frame.setContentPane(new Employee().Main);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -24,12 +26,94 @@ public class Employee {
         frame.setVisible(true);
     }
 
-    public Employee() {
+    Connection con;
+    PreparedStatement pst;
+
+    public void connect(){
+
+        try{
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost/bd_company", "root", "alejandra11");
+            System.out.println("Success");
+
+        }
+        catch(ClassNotFoundException ex){
+
+        } catch(SQLException ex){
+
+            ex.printStackTrace();
+
+        }
+    }
+
+
+    void tableLoad() throws SQLException {
+
+        try {
+            pst = con.prepareStatement("select * from employee");
+            ResultSet rs = pst.executeQuery();
+            table1.setModel(DbUtils.resultSetToTableModel(rs));
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+
+
+
+    public Employee() throws SQLException {
+        connect();
+        tableLoad();
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                String nameEmployee, salaryEmployee, mobileEmployee;
+
+                nameEmployee = txtName.getText();
+                salaryEmployee = txtSalary.getText();
+                mobileEmployee = txtMobile.getText();
+
+                    try {
+                        pst = con.prepareStatement("insert into employee(nameEmployee, salaryEmployee, mobileEmployee) values(?,?,?)");
+                        pst.setString(1, nameEmployee);
+                        pst.setString(2, salaryEmployee);
+                        pst.setString(3, mobileEmployee);
+                        pst.executeUpdate();
+                        JOptionPane.showMessageDialog(null, "Record added!!");
+                        txtName.setText("");
+                        txtSalary.setText("");
+                        txtMobile.setText("");
+                        txtName.requestFocus();
+
+
+                    }
+                    catch (SQLException e1){
+                        e1.printStackTrace();
+                }
+
             }
         });
+
+
+        searchButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+
+
+            }
+        });
+
+
     }
+
+
+
+
+
 }

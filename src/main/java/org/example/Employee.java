@@ -8,6 +8,7 @@ import java.sql.*;
 
 public class Employee {
     private JPanel Main;
+    private JTextField txtId;
     private JTextField txtName;
     private JTextField txtSalary;
     private JTextField txtMobile;
@@ -16,7 +17,7 @@ public class Employee {
     private JButton updateButton;
     private JButton searchButton;
     private JButton deleteButton;
-    private JTextField txtId;
+
 
     public static void main(String[] args) throws SQLException {
         JFrame frame = new JFrame("Employee");
@@ -104,7 +105,37 @@ public class Employee {
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                try {
 
+                    String idEmployee = txtId.getText();
+
+                    pst = con.prepareStatement("select nameEmployee, salaryEmployee, mobileEmployee from employee where idEmployee = ?");
+                    pst.setString(1, idEmployee);
+                    ResultSet rs = pst.executeQuery();
+
+                    if(rs.next()==true) {
+
+                        String nameEmployee = rs.getString(1);
+                        String salaryEmployee = rs.getString(2);
+                        String mobileEmployee = rs.getString(3);
+
+                        txtName.setText(nameEmployee);
+                        txtSalary.setText(salaryEmployee);
+                        txtMobile.setText(mobileEmployee);
+
+                    } else {
+
+                        txtName.setText("");
+                        txtSalary.setText("");
+                        txtMobile.setText("");
+                        JOptionPane.showMessageDialog(null,"Invalid Employee No");
+
+                    }
+                }
+                catch (SQLException ex)
+                {
+                    ex.printStackTrace();
+                }
 
             }
         });

@@ -1,6 +1,5 @@
 package org.example;
 import net.proteanit.sql.DbUtils;
-
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -153,7 +152,7 @@ public class Employee {
                 mobileEmployee = txtMobile.getText();
 
                 try {
-                    pst = con.prepareStatement("update employee set nameEmployee = ?, salaryEmployee = ?, mobileEmployee = ? where id = ?");
+                    pst = con.prepareStatement("update employee set nameEmployee = ?, salaryEmployee = ?, mobileEmployee = ? where idEmployee = ?");
                     pst.setString(1, nameEmployee);
                     pst.setString(2, salaryEmployee);
                     pst.setString(3, mobileEmployee);
@@ -171,6 +170,36 @@ public class Employee {
                 }
 
                 catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+            }
+
+        });
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                String idEmployee;
+
+                idEmployee = txtId.getText();
+
+                try {
+                    pst = con.prepareStatement("delete from employee where idEmployee = ?");
+
+                    pst.setString(1, idEmployee);
+
+                    pst.executeUpdate();
+                    JOptionPane.showMessageDialog(null, "Record Deleted");
+                    tableLoad();
+                    txtName.setText("");
+                    txtSalary.setText("");
+                    txtMobile.setText("");
+                    txtName.requestFocus();
+                }
+
+                catch (SQLException e1)
+                {
+
                     e1.printStackTrace();
                 }
             }

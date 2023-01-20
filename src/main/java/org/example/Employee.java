@@ -128,7 +128,7 @@ public class Employee {
                         txtName.setText("");
                         txtSalary.setText("");
                         txtMobile.setText("");
-                        JOptionPane.showMessageDialog(null,"Invalid Employee No");
+                        JOptionPane.showMessageDialog(null,"Invalid Employee id");
 
                     }
                 }
@@ -141,10 +141,42 @@ public class Employee {
         });
 
 
+        updateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                String idEmployee, nameEmployee, salaryEmployee, mobileEmployee;
+
+                idEmployee = txtId.getText();
+                nameEmployee = txtName.getText();
+                salaryEmployee = txtSalary.getText();
+                mobileEmployee = txtMobile.getText();
+
+                try {
+                    pst = con.prepareStatement("update employee set nameEmployee = ?, salaryEmployee = ?, mobileEmployee = ? where id = ?");
+                    pst.setString(1, nameEmployee);
+                    pst.setString(2, salaryEmployee);
+                    pst.setString(3, mobileEmployee);
+                    pst.setString(4, idEmployee);
+
+                    pst.executeUpdate();
+                    JOptionPane.showMessageDialog(null, "Record Updated!");
+
+                    tableLoad();
+                    txtName.setText("");
+                    txtSalary.setText("");
+                    txtMobile.setText("");
+                    txtName.requestFocus();
+
+                }
+
+                catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+            }
+
+        });
     }
-
-
-
 
 
 }
